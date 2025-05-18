@@ -3,11 +3,17 @@ import {CalendarIcon} from '@sanity/icons'
 import {schemaTypes} from './schemas'
 import CalendarTool from './tools/CalendarTool'
 
+// Note: CSS is extracted to a separate file
+// that can be imported by the user when using this plugin:
+// import 'sanity-plugin-events-calendar/styles.css'
+
 interface CalendarPluginConfig {
   /* Configuration options can be added here */
 }
 
 /**
+ * Calendar plugin for Sanity Studio
+ * 
  * Usage in `sanity.config.ts` (or .js)
  *
  * ```ts
@@ -19,6 +25,8 @@ interface CalendarPluginConfig {
  *   plugins: [calendarPlugin()],
  * })
  * ```
+ * 
+ * @public
  */
 export const calendarPlugin = definePlugin<CalendarPluginConfig | void>((config = {}) => {
   return {
@@ -36,4 +44,8 @@ export const calendarPlugin = definePlugin<CalendarPluginConfig | void>((config 
 })
 
 // Export schema types for direct usage
+/**
+ * Schema types exported by the calendar plugin
+ * @public
+ */
 export {schemaTypes}

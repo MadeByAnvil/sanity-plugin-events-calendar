@@ -1,6 +1,30 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {useClient} from 'sanity'
 
+import {
+  CalendarGrid,
+  CategorySelector,
+  Container,
+  DateOptionButton,
+  DatePicker,
+  DatePickerGrid,
+  DatePickerGroup,
+  DatePickerRow,
+  DatePickerTitle,
+  DateSelector,
+  DateToggleButton,
+  DayCell,
+  DayContent,
+  DayName,
+  DayNumber,
+  DaysHeader,
+  EmptyState,
+  Header,
+  LoadingIndicator,
+  MonthYear,
+  Navigation,
+  NavigationButton,
+} from './CalendarView.styles'
 import EventItem from './EventItem'
 
 export type Event = {
@@ -34,7 +58,6 @@ export function CalendarView(props: CalendarViewProps): React.ReactElement {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [showDatePicker, setShowDatePicker] = useState(false)
   const client = useClient({apiVersion: '2023-01-01'})
-  // No structure API used directly in this component
 
   // Get the first day of the current month
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
@@ -198,17 +221,9 @@ export function CalendarView(props: CalendarViewProps): React.ReactElement {
     // Add days from previous month if needed (for UI grid alignment)
     for (let i = 0; i < startDay; i++) {
       days.push(
-        <div
-          key={`empty-start-${i}`}
-          style={{
-            padding: '12px',
-            opacity: 0.3,
-            width: 'calc(100% / 7 - 1px)',
-            boxSizing: 'border-box',
-          }}
-        >
+        <DayCell key={`empty-start-${i}`} $inactive>
           <span />
-        </div>,
+        </DayCell>,
       )
     }
 
@@ -224,24 +239,15 @@ export function CalendarView(props: CalendarViewProps): React.ReactElement {
       })
 
       days.push(
-        <div
-          key={`day-${day}`}
-          // Style handled inline
-          style={{
-            padding: '12px',
-            minHeight: '100px',
-            width: 'calc(100% / 7 - 1px)',
-            boxSizing: 'border-box',
-          }}
-        >
-          <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
-            <div style={{fontWeight: 600}}>{day}</div>
+        <DayCell key={`day-${day}`}>
+          <DayContent>
+            <DayNumber>{day}</DayNumber>
 
             {dayEvents.map((event) => (
               <EventItem key={event._id} event={event} onEventClick={handleEventClick} />
             ))}
-          </div>
-        </div>,
+          </DayContent>
+        </DayCell>,
       )
     }
 
@@ -249,17 +255,9 @@ export function CalendarView(props: CalendarViewProps): React.ReactElement {
     const remainingCells = totalCells - (daysInMonth + startDay)
     for (let i = 0; i < remainingCells; i++) {
       days.push(
-        <div
-          key={`empty-end-${i}`}
-          style={{
-            padding: '12px',
-            opacity: 0.3,
-            width: 'calc(100% / 7 - 1px)',
-            boxSizing: 'border-box',
-          }}
-        >
+        <DayCell key={`empty-end-${i}`} $inactive>
           <span />
-        </div>,
+        </DayCell>,
       )
     }
 
@@ -282,253 +280,137 @@ export function CalendarView(props: CalendarViewProps): React.ReactElement {
   const year = currentDate.getFullYear()
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+    <Container>
       {/* Calendar Header with Controls */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '12px',
-        }}
-      >
+      <Header>
         {/* Month/Year Display and Picker Toggle */}
-        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-          <h2
-            style={{
-              fontWeight: 600,
-              fontSize: '1.2rem',
-              margin: 0,
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '4px',
-              border: '1px solid transparent',
-              transition: 'all 0.2s',
-              textDecoration: 'underline',
-            }}
+        <DateSelector>
+          <MonthYear
             onClick={() => setShowDatePicker(!showDatePicker)}
             title="Click to open month/year picker"
           >
             {monthName} {year}
-          </h2>
-          <button
-            type="button"
-            onClick={() => setShowDatePicker(!showDatePicker)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-              padding: '4px 8px',
-            }}
-          >
+          </MonthYear>
+          <DateToggleButton type="button" onClick={() => setShowDatePicker(!showDatePicker)}>
             {showDatePicker ? '▲' : '▼'}
-          </button>
-        </div>
+          </DateToggleButton>
+        </DateSelector>
 
         {/* Category Filter */}
         {categories.length > 0 && (
           <div>
-            <select
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                fontSize: '0.9rem',
-                backgroundColor: 'white',
-              }}
-            >
+            <CategorySelector value={selectedCategory} onChange={handleCategoryChange}>
               <option value="">All Categories</option>
               {categories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.title}
                 </option>
               ))}
-            </select>
+            </CategorySelector>
           </div>
         )}
 
         {/* Navigation Buttons */}
-        <div style={{display: 'flex', gap: '8px'}}>
-          <button
+        <Navigation>
+          <NavigationButton
             onClick={handlePrevMonth}
             disabled={isLoading}
             type="button"
             title="Previous Month"
-            style={{
-              padding: '6px 12px',
-              background: 'transparent',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
-            }}
           >
             ← Previous
-          </button>
-          <button
+          </NavigationButton>
+          <NavigationButton
             onClick={() => setCurrentDate(new Date())}
             disabled={isLoading}
             type="button"
             title="Today"
-            style={{
-              padding: '6px 12px',
-              background: '#f0f0f0',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
-              fontWeight: 'bold',
-            }}
+            $today
           >
             Today
-          </button>
-          <button
+          </NavigationButton>
+          <NavigationButton
             onClick={handleNextMonth}
             disabled={isLoading}
             type="button"
             title="Next Month"
-            style={{
-              padding: '6px 12px',
-              background: 'transparent',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
-            }}
           >
             Next →
-          </button>
-        </div>
-      </div>
+          </NavigationButton>
+        </Navigation>
+      </Header>
 
       {/* Month/Year Picker */}
       {showDatePicker && (
-        <div
-          style={{
-            borderRadius: '4px',
-            padding: '12px',
-            marginTop: '8px',
-            backgroundColor: '#f9f9f9',
-            border: '1px solid #eee',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-          }}
-        >
-          <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-            <div>
-              <div style={{fontWeight: 600, marginBottom: '8px'}}>Year</div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: '6px',
-                }}
-              >
+        <DatePicker>
+          <DatePickerRow>
+            <DatePickerGroup>
+              <DatePickerTitle>Year</DatePickerTitle>
+              <DatePickerGrid>
                 {Array.from({length: 5}, (_, i) => {
                   const yearOption = new Date().getFullYear() - 2 + i
                   return (
-                    <button
+                    <DateOptionButton
                       type="button"
                       key={yearOption}
-                      style={{
-                        padding: '6px',
-                        backgroundColor: yearOption === year ? '#e6f7ff' : 'white',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                      }}
+                      $active={yearOption === year}
                       onClick={() => handleDateSelection(yearOption, currentDate.getMonth())}
                     >
                       {yearOption}
-                    </button>
+                    </DateOptionButton>
                   )
                 })}
-              </div>
-            </div>
-            <div>
-              <div style={{fontWeight: 600, marginBottom: '8px'}}>Month</div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: '6px',
-                }}
-              >
+              </DatePickerGrid>
+            </DatePickerGroup>
+            <DatePickerGroup>
+              <DatePickerTitle>Month</DatePickerTitle>
+              <DatePickerGrid>
                 {Array.from({length: 12}, (_, i) => {
                   const monthOption = new Date(2000, i, 1).toLocaleString('default', {
                     month: 'short',
                   })
                   return (
-                    <button
+                    <DateOptionButton
                       type="button"
                       key={i}
-                      style={{
-                        padding: '6px',
-                        backgroundColor: i === currentDate.getMonth() ? '#e6f7ff' : 'white',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                      }}
+                      $active={i === currentDate.getMonth()}
                       onClick={() => handleDateSelection(year, i)}
                     >
                       {monthOption}
-                    </button>
+                    </DateOptionButton>
                   )
                 })}
-              </div>
-            </div>
-          </div>
-        </div>
+              </DatePickerGrid>
+            </DatePickerGroup>
+          </DatePickerRow>
+        </DatePicker>
       )}
 
       {/* Loading indicator */}
       {isLoading ? (
-        <div
-          style={{
-            padding: '20px',
-            textAlign: 'center',
-            backgroundColor: '#f9f9f9',
-            borderRadius: '4px',
-          }}
-        >
-          Loading events... Please wait.
-        </div>
+        <LoadingIndicator>Loading events... Please wait.</LoadingIndicator>
       ) : (
         <>
           {/* Day headers */}
-          <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+          <DaysHeader>
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} style={{flex: 1, padding: '8px'}}>
-                <div style={{textAlign: 'center', fontWeight: 600}}>{day}</div>
-              </div>
+              <DayName key={day}>{day}</DayName>
             ))}
-          </div>
+          </DaysHeader>
 
           {/* Calendar grid */}
-          <div style={{display: 'flex', flexWrap: 'wrap'}}>{renderCalendarDays()}</div>
+          <CalendarGrid>{renderCalendarDays()}</CalendarGrid>
 
           {/* Empty state message when no events are found */}
           {events.length === 0 && !isLoading && (
-            <div
-              style={{
-                padding: '16px',
-                textAlign: 'center',
-                backgroundColor: '#fafafa',
-                borderRadius: '4px',
-                marginTop: '16px',
-                color: '#666',
-              }}
-            >
+            <EmptyState>
               {selectedCategory
                 ? 'No events found for this category in the selected month.'
                 : 'No events found for this month.'}
-            </div>
+            </EmptyState>
           )}
         </>
       )}
-    </div>
+    </Container>
   )
 }

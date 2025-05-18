@@ -1,22 +1,32 @@
 import {defineConfig} from '@sanity/pkg-utils'
+import postcss from 'rollup-plugin-postcss'
+import autoprefixer from 'autoprefixer'
+import cssnano from 'cssnano'
 
 export default defineConfig({
-  dist: 'dist',
-  tsconfig: 'tsconfig.dist.json',
-
-  // Remove this block to enable strict export validation
   extract: {
-    rules: {
-      'ae-forgotten-export': 'off',
-      'ae-incompatible-release-tags': 'off',
-      'ae-internal-missing-underscore': 'off',
-      'ae-missing-release-tag': 'off',
-    },
+    bundledPackages: [''],
   },
-  // Add sanityPlugin configuration to avoid TypeScript issues
-  sanityPlugin: {
-    verifyPackage: {
-      tsc: false
-    }
-  }
+  rollup: {
+    plugins: [
+      postcss({
+        plugins: [
+          autoprefixer(),
+          cssnano({
+            preset: 'default',
+          }),
+        ],
+        // Don't inject styles during build
+        inject: false,
+        // Extract to root dist directory
+        extract: 'styles.css',
+        modules: false,
+        sourceMap: process.env.NODE_ENV !== 'production',
+        minimize: process.env.NODE_ENV === 'production',
+        autoModules: false,
+        // Process @import statements to include all CSS in one file
+        extensions: ['.css'],
+      }),
+    ],
+  },
 })

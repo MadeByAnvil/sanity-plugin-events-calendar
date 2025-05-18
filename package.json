@@ -19,7 +19,9 @@
   },
   "license": "MIT",
   "author": "Casey Zumwalt <casey@madebyanvil.com>",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "type": "commonjs",
   "sanityPlugin": {
     "verifyPackage": {
@@ -62,17 +64,22 @@
     "@types/react": "^19.1.4",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.0.7",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-config-sanity": "^7.1.4",
     "eslint-plugin-prettier": "^5.4.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "prettier-plugin-packagejson": "^2.5.13",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "rollup-plugin-postcss": "^4.0.2",
     "sanity": "^3.88.3",
+    "sass": "^1.89.0",
     "styled-components": "^6.1.18",
     "typescript": "^5.8.3"
   },

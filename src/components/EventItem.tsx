@@ -1,34 +1,20 @@
 import React, {useCallback} from 'react'
 
 import {type Event} from './CalendarView'
+import {
+  CategoryBadge,
+  CategoryMore,
+  EventCategories,
+  EventContainer,
+  EventHeader,
+  EventStatus,
+  EventTime,
+  EventTitle,
+} from './EventItem.styles'
 
 type EventItemProps = {
   event: Event
   onEventClick: (id: string) => void
-}
-
-// Event styling constants
-const COLORS = {
-  default: {
-    background: '#e6f7ff',
-    text: 'inherit',
-    border: '#bde3ff',
-  },
-  cancelled: {
-    background: '#ffebe6',
-    text: '#d73a49',
-    border: '#ffccc2',
-  },
-  postponed: {
-    background: '#fff5e6',
-    text: '#b08800',
-    border: '#ffeac2',
-  },
-  featured: {
-    background: '#e6fff6',
-    text: '#008000',
-    border: '#c2ffe0',
-  },
 }
 
 // Format time display
@@ -59,161 +45,56 @@ const EventItem = React.memo(({event, onEventClick}: EventItemProps) => {
     return null
   }
 
-  // Determine event styles based on status and category
-  const getEventStyles = () => {
-    // Base container styles
-    const containerStyle: React.CSSProperties = {
-      fontSize: '0.75rem',
-      padding: '8px',
-      marginBottom: '4px',
-      backgroundColor: COLORS.default.background,
-      borderRadius: '3px',
-      cursor: 'pointer',
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-      transition: 'all 0.2s',
-      border: `1px solid ${COLORS.default.border}`,
-      position: 'relative',
-      overflow: 'hidden',
-    }
-
-    // Base text styles
-    const textStyle: React.CSSProperties = {
-      fontWeight: 500,
-    }
-
-    // Category color stripe
-    const categoryColor = getCategoryColor()
-    if (categoryColor) {
-      containerStyle.borderLeft = `3px solid ${categoryColor}`
-      containerStyle.paddingLeft = '6px'
-    }
-
-    // Apply status-specific styles
-    if (event.status === 'cancelled') {
-      containerStyle.backgroundColor = COLORS.cancelled.background
-      containerStyle.border = `1px solid ${COLORS.cancelled.border}`
-      textStyle.textDecoration = 'line-through'
-      textStyle.color = COLORS.cancelled.text
-    } else if (event.status === 'postponed') {
-      containerStyle.backgroundColor = COLORS.postponed.background
-      containerStyle.border = `1px solid ${COLORS.postponed.border}`
-      textStyle.fontStyle = 'italic'
-      textStyle.color = COLORS.postponed.text
-    } else if (event.featured) {
-      containerStyle.backgroundColor = COLORS.featured.background
-      containerStyle.border = `1px solid ${COLORS.featured.border}`
-      textStyle.fontWeight = 'bold'
-    }
-
-    return {containerStyle, textStyle}
-  }
-
-  const {containerStyle, textStyle} = getEventStyles()
   const timeString = formatEventTime(event)
+  const categoryColor = getCategoryColor()
 
-  // Build category badges
-  const categoryBadges = event.categories?.length ? (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: '4px',
-        marginTop: '4px',
-        fontSize: '0.75rem',
-      }}
-    >
-      {event.categories.slice(0, 2).map((category) => (
-        <span
-          key={category._id}
-          style={{
-            display: 'inline-block',
-            padding: '2px 6px',
-            backgroundColor: category.color || '#eee',
-            color: category.color ? getContrastColor(category.color) : '#333',
-            borderRadius: '3px',
-            fontWeight: 500,
-            fontSize: '0.7rem',
-          }}
-        >
-          {category.title}
-        </span>
-      ))}
-      {event.categories.length > 2 && (
-        <span
-          style={{
-            fontSize: '0.7rem',
-            color: '#666',
-          }}
-        >
-          +{event.categories.length - 2} more
-        </span>
-      )}
-    </div>
-  ) : null
+  // Determine if this is cancelled, featured, or postponed
+  const isCancelled = event.status === 'cancelled'
+  const isPostponed = event.status === 'postponed'
+  const isFeatured = !!event.featured
 
   return (
-    <div
-      key={event._id}
+    <EventContainer
       onClick={handleClick}
-      style={containerStyle}
-      onMouseOver={(e) => {
-        const target = e.currentTarget
-        target.style.opacity = '0.9'
-        target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)'
-        target.style.transform = 'translateY(-1px)'
-      }}
-      onMouseOut={(e) => {
-        const target = e.currentTarget
-        target.style.opacity = '1'
-        target.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)'
-        target.style.transform = 'translateY(0)'
-      }}
+      $featured={isFeatured}
+      $postponed={isPostponed}
+      $cancelled={isCancelled}
+      $categoryColor={categoryColor || undefined}
     >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-        }}
-      >
-        <span style={textStyle}>
-          {event.featured && '★ '}
+      <EventHeader>
+        <EventTitle $featured={isFeatured} $postponed={isPostponed} $cancelled={isCancelled}>
+          {isFeatured && '★ '}
           {event.title}
-        </span>
-        {!event.allDay && (
-          <span
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '0.65rem',
-              color: '#666',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {timeString}
-          </span>
-        )}
-      </div>
+        </EventTitle>
+
+        {!event.allDay && <EventTime>{timeString}</EventTime>}
+      </EventHeader>
 
       {/* Status indicator if cancelled or postponed */}
-      {(event.status === 'cancelled' || event.status === 'postponed') && (
-        <div
-          style={{
-            marginTop: '2px',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            color: event.status === 'cancelled' ? COLORS.cancelled.text : COLORS.postponed.text,
-          }}
-        >
-          {event.status === 'cancelled' ? 'Cancelled' : 'Postponed'}
-        </div>
+      {(isCancelled || isPostponed) && (
+        <EventStatus $status={isCancelled ? 'cancelled' : 'postponed'}>
+          {isCancelled ? 'Cancelled' : 'Postponed'}
+        </EventStatus>
       )}
 
       {/* Category badges */}
-      {categoryBadges}
-    </div>
+      {event.categories?.length ? (
+        <EventCategories>
+          {event.categories.slice(0, 2).map((category) => (
+            <CategoryBadge
+              key={category._id}
+              $backgroundColor={category.color}
+              $textColor={category.color ? getContrastColor(category.color) : '#333'}
+            >
+              {category.title}
+            </CategoryBadge>
+          ))}
+          {event.categories.length > 2 && (
+            <CategoryMore>+{event.categories.length - 2} more</CategoryMore>
+          )}
+        </EventCategories>
+      ) : null}
+    </EventContainer>
   )
 })
 
