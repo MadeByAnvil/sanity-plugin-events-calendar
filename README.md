@@ -8,6 +8,18 @@
 npm install sanity-plugin-events-calendar
 ```
 
+or
+
+```sh
+yarn add sanity-plugin-events-calendar
+```
+
+or
+
+```sh
+pnpm add sanity-plugin-events-calendar
+```
+
 ## Usage
 
 Add it as a plugin in `sanity.config.ts` (or .js):
@@ -27,11 +39,13 @@ export default defineConfig({
 This plugin provides a comprehensive event management system with the following:
 
 - **Calendar View**: A visual monthly calendar that displays all scheduled events
+
   - Navigate between months
   - View events by day
   - Click events to edit details
 
 - **Calendar Events**: Create and manage events with support for:
+
   - Basic event details (title, description, dates)
   - Location information (physical or virtual)
   - Categorization (categories, tags)
@@ -59,9 +73,84 @@ The main document type for events includes:
 - Visibility settings
 - Attendee management
 
+View the [Usage Guide](./docs/usage-guide.md) documentation for more information on how to use the plugin.
+
+## GROQ Query Examples
+
+View the [GROQ Query Examples](./docs/groq-examples.md) documentation for more information on how to query calendar events.
+
+### Get all upcoming events
+
+```groq
+*[_type == "calendarEvent" && startDateTime > now()] | order(startDateTime asc)
+```
+
+### Get events for a specific month
+
+```groq
+*[
+  _type == "calendarEvent" &&
+  startDateTime >= $startDate &&
+  startDateTime <= $endDate
+] | order(startDateTime asc)
+```
+
+### Get events for a specific category
+
+```groq
+*[
+  _type == "calendarEvent" &&
+  count(categories[references($categoryId)]) > 0
+] | order(startDateTime asc)
+```
+
+### Get featured events
+
+```groq
+*[_type == "calendarEvent" && featured == true] | order(startDateTime asc)
+```
+
+### Get events with full references
+
+```groq
+*[_type == "calendarEvent"] {
+  _id,
+  title,
+  startDateTime,
+  endDateTime,
+  allDay,
+  status,
+  featured,
+  "categories": categories[]-> {
+    _id,
+    title,
+    color
+  },
+  "organizers": organizers[]-> {
+    _id,
+    name,
+    role,
+    image
+  },
+  "slug": slug.current
+}
+```
+
+## Integration with Frontend Libraries
+
+View the [Frontend Integration](./docs/frontend-integration.md) documentation for more information on how to integrate calendar data with your frontend.
+
 ## License
 
 [MIT](LICENSE) © Casey Zumwalt
+
+## Documentation
+
+For more detailed documentation:
+
+- [Usage Guide](./docs/usage-guide.md) - How to use the calendar plugin
+- [GROQ Query Examples](./docs/groq-examples.md) - Sample GROQ queries for calendar events
+- [Frontend Integration](./docs/frontend-integration.md) - Using events with React Big Calendar, FullCalendar, and frameworks
 
 ## Develop & test
 
