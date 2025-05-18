@@ -151,6 +151,8 @@ For more detailed documentation:
 - [Usage Guide](./docs/usage-guide.md) - How to use the calendar plugin
 - [GROQ Query Examples](./docs/groq-examples.md) - Sample GROQ queries for calendar events
 - [Frontend Integration](./docs/frontend-integration.md) - Using events with React Big Calendar, FullCalendar, and frameworks
+- [Local Development](./docs/local-development.md) - Guide for local development
+- [Contributing](./CONTRIBUTING.md) - Guidelines for contributing to the project
 
 ## Develop & test
 
