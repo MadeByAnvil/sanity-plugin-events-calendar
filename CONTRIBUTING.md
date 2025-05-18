@@ -136,22 +136,42 @@ npm run format
 
 ### Commit Message Guidelines
 
-We use conventional commits to standardize our commit messages:
+We use Conventional Commits to standardize our commit messages. All commit messages are automatically validated with commitlint.
 
-- `feat:` - A new feature
-- `fix:` - A bug fix
-- `docs:` - Documentation only changes
-- `style:` - Changes that do not affect the meaning of the code (white-space, formatting, etc)
-- `refactor:` - A code change that neither fixes a bug nor adds a feature
-- `perf:` - A code change that improves performance
-- `test:` - Adding missing tests or correcting existing tests
-- `chore:` - Changes to the build process or auxiliary tools
+Your commit messages must follow this format:
 
-Example:
+```
+type(scope?): subject
+```
+
+Where:
+
+- `type` is one of:
+  - `feat`: A new feature
+  - `fix`: A bug fix
+  - `docs`: Documentation only changes
+  - `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+  - `refactor`: A code change that neither fixes a bug nor adds a feature
+  - `perf`: A code change that improves performance
+  - `test`: Adding missing tests or correcting existing tests
+  - `build`: Changes to the build system or dependencies
+  - `ci`: Changes to CI configuration files and scripts
+  - `chore`: Other changes that don't modify src or test files
+  - `revert`: Reverts a previous commit
+- `scope` is optional and specifies the section of the codebase affected (e.g., component, file)
+- `subject` is a short description of the change in the imperative mood (present tense)
+
+Examples of valid commit messages:
 
 ```
 feat: add calendar month navigation feature
+fix(EventItem): correct date display for all-day events
+docs: update integration documentation for React Big Calendar
+style: format code with prettier
+refactor(CalendarView): simplify month calculation logic
 ```
+
+Commits not following this convention will be rejected by the pre-commit hook.
 
 ## Testing
 
@@ -186,14 +206,20 @@ The project maintainers will handle releases. The general process is:
 
 ## Setting Up Pre-commit Hooks
 
-We use Husky and lint-staged to run checks before each commit:
+We use Husky, lint-staged, and commitlint to maintain code quality and consistent commit messages:
 
 1. Install the hooks after cloning the repository:
    ```
    npm run prepare
    ```
 
-This will set up pre-commit hooks to automatically lint and format your code before committing, ensuring all contributed code meets our standards.
+This will set up pre-commit hooks that:
+
+- Automatically lint and format your code before committing
+- Validate your commit messages against the conventional commits format
+- Ensure all contributed code meets our quality standards
+
+If your commit fails because of a commit message format issue, you'll see an error explaining what went wrong and how to fix it.
 
 ## Questions?
 

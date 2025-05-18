@@ -122,13 +122,26 @@ npm run format
 
 ### Pre-commit Hooks
 
-The project is configured with pre-commit hooks that automatically lint and format your code before each commit. This ensures code quality and consistency.
+The project is configured with pre-commit hooks that:
+
+1. Automatically lint and format your code before each commit
+2. Validate commit messages according to the Conventional Commits specification
+
+This ensures code quality and consistency, as well as maintaining a clean and standardized commit history.
 
 To install the pre-commit hooks:
 
 ```bash
 npm run prepare
 ```
+
+Note on commit messages:
+
+- Commit messages must follow the format: `type(scope?): subject`
+- Valid types include: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- Example: `feat(calendar): add month navigation controls`
+
+If your commit fails validation, the error message will show what went wrong and how to fix it.
 
 ## Project Structure
 
