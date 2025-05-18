@@ -1,0 +1,75 @@
+{
+  "name": "sanity-plugin-events-calendar",
+  "version": "1.0.0",
+  "description": "A simple events calendar plugin for Sanity",
+  "keywords": [
+    "sanity",
+    "sanity-plugin"
+  ],
+  "homepage": "https://github.com/madebyanvil/sanity-plugin-events-calendar#readme",
+  "bugs": {
+    "url": "https://github.com/madebyanvil/sanity-plugin-events-calendar/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/madebyanvil/sanity-plugin-events-calendar.git"
+  },
+  "license": "MIT",
+  "author": "Casey Zumwalt <casey@madebyanvil.com>",
+  "sideEffects": false,
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "sanity.json",
+    "src",
+    "v2-incompatible.js"
+  ],
+  "scripts": {
+    "build": "plugin-kit verify-package --silent && pkg-utils build --strict --check --clean",
+    "format": "prettier --write --cache --ignore-unknown .",
+    "link-watch": "plugin-kit link-watch",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run build",
+    "watch": "pkg-utils watch --strict"
+  },
+  "dependencies": {
+    "@sanity/incompatible-plugin": "^1.0.5"
+  },
+  "devDependencies": {
+    "@sanity/pkg-utils": "^7.2.2",
+    "@sanity/plugin-kit": "^4.0.19",
+    "@types/react": "^19.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-config-sanity": "^7.1.4",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-packagejson": "^2.5.13",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sanity": "^3.88.3",
+    "styled-components": "^6.1.18",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "react": "^18",
+    "sanity": "^3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
