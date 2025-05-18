@@ -58,3 +58,7 @@ yalc.lock
 
 # Compiled plugin
 dist
+
+# Non-NPM lockfiles
+yarn.lock
+pnpm-lock.yaml

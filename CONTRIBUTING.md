@@ -4,14 +4,22 @@ Thank you for your interest in contributing to the Sanity Calendar Plugin! This 
 
 ## Table of Contents
 
-1. [Code of Conduct](#code-of-conduct)
-2. [Getting Started](#getting-started)
-3. [Development Setup](#development-setup)
-4. [Coding Standards](#coding-standards)
-5. [Pull Request Process](#pull-request-process)
-6. [Testing](#testing)
-7. [Documentation](#documentation)
-8. [Release Process](#release-process)
+- [Contributing to Sanity Calendar Plugin](#contributing-to-sanity-calendar-plugin)
+  - [Table of Contents](#table-of-contents)
+  - [Code of Conduct](#code-of-conduct)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Issues](#issues)
+  - [Development Setup](#development-setup)
+  - [Coding Standards](#coding-standards)
+    - [Key Coding Guidelines](#key-coding-guidelines)
+  - [Pull Request Process](#pull-request-process)
+    - [Commit Message Guidelines](#commit-message-guidelines)
+  - [Testing](#testing)
+  - [Documentation](#documentation)
+  - [Release Process](#release-process)
+  - [Setting Up Pre-commit Hooks](#setting-up-pre-commit-hooks)
+  - [Questions?](#questions)
 
 ## Code of Conduct
 
@@ -22,7 +30,7 @@ This project adheres to a Code of Conduct that establishes expected behavior in 
 ### Prerequisites
 
 - Node.js 18.x or higher
-- npm or pnpm (pnpm is preferred)
+- npm
 - Git
 
 ### Issues
@@ -36,38 +44,41 @@ This project adheres to a Code of Conduct that establishes expected behavior in 
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
+
    ```
-   git clone https://github.com/YOUR-USERNAME/sanity-plugin-events-calendar.git
+   git clone https://github.com/MadeByAnvil/sanity-plugin-events-calendar.git
    cd sanity-plugin-events-calendar
    ```
 
 3. Install dependencies:
+
    ```
    npm install
-   # or
-   pnpm install
    ```
 
 4. Create a branch for your changes:
+
    ```
    git checkout -b feature/your-feature-name
    ```
 
 5. Setup local development:
+
    ```
    npm run link-watch
    ```
+
    This will build the plugin and watch for changes, allowing you to test it in a local Sanity Studio project.
 
 6. In your Sanity Studio project, link the plugin:
+
    ```
    cd your-sanity-studio
    npm link sanity-plugin-events-calendar
-   # or
-   pnpm link --global sanity-plugin-events-calendar
    ```
 
 7. Add the plugin to your Sanity Studio configuration:
+
    ```js
    // sanity.config.ts or sanity.config.js
    import {defineConfig} from 'sanity'
@@ -77,8 +88,8 @@ This project adheres to a Code of Conduct that establishes expected behavior in 
      // ...your config
      plugins: [
        // ...other plugins
-       calendarPlugin()
-     ]
+       calendarPlugin(),
+     ],
    })
    ```
 
@@ -137,6 +148,7 @@ We use conventional commits to standardize our commit messages:
 - `chore:` - Changes to the build process or auxiliary tools
 
 Example:
+
 ```
 feat: add calendar month navigation feature
 ```

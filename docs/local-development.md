@@ -7,7 +7,7 @@ This guide provides detailed instructions for setting up and working on the Sani
 Before you begin, ensure you have the following installed:
 
 - **Node.js** (version 18 or higher)
-- **npm** or **pnpm** (pnpm is preferred)
+- **npm**
 - **Git**
 
 ## Setup Steps
@@ -17,7 +17,7 @@ Before you begin, ensure you have the following installed:
 First, fork the repository on GitHub, then clone your fork:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/sanity-plugin-events-calendar.git
+git clone https://github.com/MadeByAnvil/sanity-plugin-events-calendar.git
 cd sanity-plugin-events-calendar
 ```
 
@@ -27,21 +27,18 @@ Install all required dependencies:
 
 ```bash
 npm install
-# or
-pnpm install
 ```
 
 ### 3. Set Up for Local Development
 
 The plugin uses [@sanity/plugin-kit](https://github.com/sanity-io/plugin-kit) which provides utilities for local development:
 
-```bash
+````bash
 npm run link-watch
-# or 
-pnpm link-watch
-```
+    ```
 
 This command:
+
 - Builds the plugin in development mode
 - Watches for changes to rebuild automatically
 - Creates a global link for the package
@@ -57,9 +54,7 @@ If you already have a Sanity Studio project:
 ```bash
 cd path/to/your-sanity-studio
 npm link sanity-plugin-events-calendar
-# or
-pnpm link --global sanity-plugin-events-calendar
-```
+````
 
 #### Option B: Create a Test Sanity Studio Project
 
@@ -69,8 +64,6 @@ If you don't have a Sanity Studio project, create a new one:
 npm create sanity@latest -- --template clean test-calendar-plugin
 cd test-calendar-plugin
 npm link sanity-plugin-events-calendar
-# or
-pnpm link --global sanity-plugin-events-calendar
 ```
 
 ### 5. Configure the Test Studio
@@ -86,8 +79,8 @@ export default defineConfig({
   // Your other configuration
   plugins: [
     // Your other plugins
-    calendarPlugin()
-  ]
+    calendarPlugin(),
+  ],
 })
 ```
 
@@ -97,8 +90,6 @@ Run your Sanity Studio development server:
 
 ```bash
 npm run dev
-# or
-pnpm dev
 ```
 
 Now your Sanity Studio will be running with your development version of the calendar plugin.
@@ -108,6 +99,7 @@ Now your Sanity Studio will be running with your development version of the cale
 ### Making Changes
 
 1. Create a feature branch:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -123,13 +115,9 @@ Before committing, make sure your code follows the project's style guidelines:
 ```bash
 # Check for linting issues
 npm run lint
-# or
-pnpm lint
 
 # Format your code
 npm run format
-# or
-pnpm format
 ```
 
 ### Pre-commit Hooks
@@ -140,8 +128,6 @@ To install the pre-commit hooks:
 
 ```bash
 npm run prepare
-# or
-pnpm prepare
 ```
 
 ## Project Structure
@@ -170,11 +156,10 @@ To create a production build:
 
 ```bash
 npm run build
-# or
-pnpm build
 ```
 
 This will:
+
 1. Verify the package structure
 2. Check types with TypeScript
 3. Build the plugin with optimizations
@@ -210,7 +195,7 @@ If the linking process isn't working:
    npm unlink sanity-plugin-events-calendar
    npm link sanity-plugin-events-calendar
    ```
-2. Make sure you don't have the package installed via npm/pnpm in your Studio
+2. Make sure you don't have the package installed via npm in your Studio
 3. Check node_modules for conflicting versions
 
 ### Getting Help
@@ -241,12 +226,14 @@ If you encounter issues that you can't resolve, please:
 Once you're satisfied with your changes:
 
 1. Commit your changes with a descriptive message:
+
    ```bash
    git add .
    git commit -m "feat: add new calendar feature"
    ```
 
 2. Push to your fork:
+
    ```bash
    git push origin feature/your-feature-name
    ```
