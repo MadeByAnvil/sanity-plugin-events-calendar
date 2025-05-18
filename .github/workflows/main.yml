@@ -32,8 +32,8 @@ jobs:
           cache: 'npm'
       - name: Clean install cache
         run: rm -rf node_modules package-lock.json
-      - name: Update npm
-        run: npm install -g npm@latest
+      - name: Use compatible npm for Node 18
+        run: npm install -g npm@9.9.2
       - name: Install dependencies
         run: npm ci
       - name: Lint
@@ -60,8 +60,12 @@ jobs:
           cache: 'npm'
       - name: Clean install cache
         run: rm -rf node_modules package-lock.json
-      - name: Update npm
+      - name: Update npm for Node 20+
+        if: matrix.node >= 20
         run: npm install -g npm@latest
+      - name: Use compatible npm for Node 18
+        if: matrix.node < 20
+        run: npm install -g npm@9.9.2
       - name: Install dependencies
         run: npm ci
       - name: Test
@@ -86,8 +90,8 @@ jobs:
           cache: 'npm'
       - name: Clean install cache
         run: rm -rf node_modules package-lock.json
-      - name: Update npm
-        run: npm install -g npm@latest
+      - name: Use compatible npm for Node 18
+        run: npm install -g npm@9.9.2
       - name: Install dependencies
         run: npm ci
       - name: Build
