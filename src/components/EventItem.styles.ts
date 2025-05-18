@@ -1,5 +1,6 @@
-import styled, { css } from 'styled-components'
-import { theme } from '../styles/theme'
+import styled, {css} from 'styled-components'
+
+import {theme} from '../styles/theme'
 
 // Define common styles for different event states
 const featuredEventStyles = css`
@@ -18,11 +19,11 @@ const cancelledEventStyles = css`
 `
 
 // Main event container with conditional styling
-export const EventContainer = styled.div<{ 
-  $featured?: boolean;
-  $postponed?: boolean;
-  $cancelled?: boolean;
-  $categoryColor?: string;
+export const EventContainer = styled.div<{
+  $featured?: boolean
+  $postponed?: boolean
+  $cancelled?: boolean
+  $categoryColor?: string
 }>`
   font-size: ${theme.fontSizes.sm};
   padding: ${theme.space.sm};
@@ -35,17 +36,19 @@ export const EventContainer = styled.div<{
   border: 1px solid ${theme.colors.event.default.border};
   position: relative;
   overflow: hidden;
-  
+
   /* Apply event state styles */
-  ${props => props.$featured && featuredEventStyles}
-  ${props => props.$postponed && postponedEventStyles}
-  ${props => props.$cancelled && cancelledEventStyles}
+  ${(props) => props.$featured && featuredEventStyles}
+  ${(props) => props.$postponed && postponedEventStyles}
+  ${(props) => props.$cancelled && cancelledEventStyles}
   
   /* Apply category color if available */
-  ${props => props.$categoryColor && css`
-    border-left: 3px solid ${props.$categoryColor};
-    padding-left: 6px;
-  `}
+  ${(props) =>
+    props.$categoryColor &&
+    css`
+      border-left: 3px solid ${props.$categoryColor};
+      padding-left: 6px;
+    `}
   
   /* Hover effects */
   &:hover {
@@ -62,27 +65,33 @@ export const EventHeader = styled.div`
 `
 
 export const EventTitle = styled.span<{
-  $featured?: boolean;
-  $postponed?: boolean;
-  $cancelled?: boolean;
+  $featured?: boolean
+  $postponed?: boolean
+  $cancelled?: boolean
 }>`
   word-break: break-word;
-  
+
   /* Apply text styling based on event state */
-  ${props => props.$featured && css`
-    font-weight: bold;
-    color: ${theme.colors.event.featured.text};
-  `}
+  ${(props) =>
+    props.$featured &&
+    css`
+      font-weight: bold;
+      color: ${theme.colors.event.featured.text};
+    `}
+
+  ${(props) =>
+    props.$postponed &&
+    css`
+      font-style: italic;
+      color: ${theme.colors.event.postponed.text};
+    `}
   
-  ${props => props.$postponed && css`
-    font-style: italic;
-    color: ${theme.colors.event.postponed.text};
-  `}
-  
-  ${props => props.$cancelled && css`
-    text-decoration: line-through;
-    color: ${theme.colors.event.cancelled.text};
-  `}
+  ${(props) =>
+    props.$cancelled &&
+    css`
+      text-decoration: line-through;
+      color: ${theme.colors.event.cancelled.text};
+    `}
 `
 
 export const EventTime = styled.span`
@@ -93,16 +102,15 @@ export const EventTime = styled.span`
 `
 
 export const EventStatus = styled.div<{
-  $status: 'cancelled' | 'postponed';
+  $status: 'cancelled' | 'postponed'
 }>`
   margin-top: 2px;
   font-size: ${theme.fontSizes.xs};
   font-weight: 500;
-  color: ${props => 
-    props.$status === 'cancelled' 
-      ? theme.colors.event.cancelled.text 
-      : theme.colors.event.postponed.text
-  };
+  color: ${(props) =>
+    props.$status === 'cancelled'
+      ? theme.colors.event.cancelled.text
+      : theme.colors.event.postponed.text};
 `
 
 export const EventCategories = styled.div`
@@ -114,16 +122,16 @@ export const EventCategories = styled.div`
 `
 
 export const CategoryBadge = styled.span<{
-  $backgroundColor?: string;
-  $textColor?: string;
+  $backgroundColor?: string
+  $textColor?: string
 }>`
   display: inline-block;
   padding: 2px 6px;
   border-radius: ${theme.radii.sm};
   font-weight: 500;
   font-size: ${theme.fontSizes.xs};
-  background-color: ${props => props.$backgroundColor || '#eee'};
-  color: ${props => props.$textColor || '#333'};
+  background-color: ${(props) => props.$backgroundColor || '#eee'};
+  color: ${(props) => props.$textColor || '#333'};
 `
 
 export const CategoryMore = styled.span`

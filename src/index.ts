@@ -1,5 +1,6 @@
-import {definePlugin} from 'sanity'
 import {CalendarIcon} from '@sanity/icons'
+import {definePlugin} from 'sanity'
+
 import {schemaTypes} from './schemas'
 import CalendarTool from './tools/CalendarTool'
 
@@ -7,13 +8,9 @@ import CalendarTool from './tools/CalendarTool'
 // that can be imported by the user when using this plugin:
 // import 'sanity-plugin-events-calendar/styles.css'
 
-interface CalendarPluginConfig {
-  /* Configuration options can be added here */
-}
-
 /**
  * Calendar plugin for Sanity Studio
- * 
+ *
  * Usage in `sanity.config.ts` (or .js)
  *
  * ```ts
@@ -25,21 +22,23 @@ interface CalendarPluginConfig {
  *   plugins: [calendarPlugin()],
  * })
  * ```
- * 
+ *
  * @public
  */
-export const calendarPlugin = definePlugin<CalendarPluginConfig | void>((config = {}) => {
+export const calendarPlugin = definePlugin(() => {
   return {
     name: 'sanity-plugin-events-calendar',
     schema: {
       types: schemaTypes,
     },
-    tools: [{
-      name: 'calendar',
-      title: 'Calendar',
-      icon: CalendarIcon,
-      component: CalendarTool,
-    }],
+    tools: [
+      {
+        name: 'calendar',
+        title: 'Calendar',
+        icon: CalendarIcon,
+        component: CalendarTool,
+      },
+    ],
   }
 })
 

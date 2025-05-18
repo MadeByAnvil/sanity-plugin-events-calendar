@@ -1,5 +1,6 @@
-import {Rule} from 'sanity'
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {UserIcon} from '@sanity/icons'
+import {Asset, Rule} from 'sanity'
 
 export default {
   name: 'person',
@@ -12,32 +13,32 @@ export default {
       title: 'Contact Information',
       options: {
         collapsible: true,
-        collapsed: false
-      }
+        collapsed: false,
+      },
     },
     {
       name: 'profile',
       title: 'Profile & Bio',
       options: {
         collapsible: true,
-        collapsed: false
-      }
-    }
+        collapsed: false,
+      },
+    },
   ],
   groups: [
     {
       name: 'identity',
       title: 'Identity',
-      default: true
+      default: true,
     },
     {
       name: 'contact',
-      title: 'Contact'
+      title: 'Contact',
     },
     {
       name: 'details',
-      title: 'Details'
-    }
+      title: 'Details',
+    },
   ],
   fields: [
     // Basic Identity Fields
@@ -46,8 +47,8 @@ export default {
       title: 'Full Name',
       type: 'string',
       description: 'Full name of the person',
-      validation: (Rule: Rule) => Rule.required().min(2),
-      group: 'identity'
+      validation: (rule: Rule) => rule.required().min(2),
+      group: 'identity',
     },
     {
       name: 'slug',
@@ -56,10 +57,10 @@ export default {
       description: 'URL-friendly identifier',
       options: {
         source: 'name',
-        maxLength: 96
+        maxLength: 96,
       },
-      validation: (Rule: Rule) => Rule.required(),
-      group: 'identity'
+      validation: (rule: Rule) => rule.required(),
+      group: 'identity',
     },
     {
       name: 'image',
@@ -67,7 +68,7 @@ export default {
       type: 'image',
       description: 'Photo of this person',
       options: {
-        hotspot: true
+        hotspot: true,
       },
       fields: [
         {
@@ -76,25 +77,25 @@ export default {
           type: 'string',
           description: 'Important for accessibility',
           options: {
-            isHighlighted: true
-          }
-        }
+            isHighlighted: true,
+          },
+        },
       ],
-      group: 'identity'
+      group: 'identity',
     },
     {
       name: 'role',
       title: 'Role',
       type: 'string',
       description: 'Primary role or job title',
-      group: 'identity'
+      group: 'identity',
     },
     {
       name: 'organization',
       title: 'Organization',
       type: 'string',
       description: 'Company or organization name',
-      group: 'identity'
+      group: 'identity',
     },
 
     // Contact Information Fields
@@ -103,15 +104,15 @@ export default {
       title: 'Email Address',
       type: 'string',
       description: 'Primary email contact',
-      validation: (Rule: Rule) => Rule.regex(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        {
-          name: 'email',
-          invert: false
-        }
-      ).warning('Please enter a valid email address'),
+      validation: (rule: Rule) =>
+        rule
+          .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+            name: 'email',
+            invert: false,
+          })
+          .warning('Please enter a valid email address'),
       fieldset: 'contact',
-      group: 'contact'
+      group: 'contact',
     },
     {
       name: 'phone',
@@ -119,18 +120,19 @@ export default {
       type: 'string',
       description: 'Primary phone contact',
       fieldset: 'contact',
-      group: 'contact'
+      group: 'contact',
     },
     {
       name: 'website',
       title: 'Website',
       type: 'url',
       description: 'Personal or professional website',
-      validation: (Rule: Rule) => Rule.uri({
-        scheme: ['http', 'https']
-      }),
+      validation: (rule: Rule) =>
+        rule.uri({
+          scheme: ['http', 'https'],
+        }),
       fieldset: 'contact',
-      group: 'contact'
+      group: 'contact',
     },
     {
       name: 'socialMedia',
@@ -141,14 +143,14 @@ export default {
         {name: 'twitter', type: 'string', title: 'Twitter/X', description: 'Twitter/X handle'},
         {name: 'linkedin', type: 'url', title: 'LinkedIn', description: 'LinkedIn profile URL'},
         {name: 'instagram', type: 'string', title: 'Instagram', description: 'Instagram handle'},
-        {name: 'facebook', type: 'url', title: 'Facebook', description: 'Facebook profile URL'}
+        {name: 'facebook', type: 'url', title: 'Facebook', description: 'Facebook profile URL'},
       ],
       options: {
         collapsible: true,
-        collapsed: true
+        collapsed: true,
       },
       fieldset: 'contact',
-      group: 'contact'
+      group: 'contact',
     },
 
     // Profile & Bio Fields
@@ -158,9 +160,9 @@ export default {
       type: 'text',
       description: 'Brief biography (1-2 sentences)',
       rows: 2,
-      validation: (Rule: Rule) => Rule.max(200),
+      validation: (rule: Rule) => rule.max(200),
       fieldset: 'profile',
-      group: 'details'
+      group: 'details',
     },
     {
       name: 'fullBio',
@@ -169,7 +171,7 @@ export default {
       description: 'Detailed biography',
       rows: 5,
       fieldset: 'profile',
-      group: 'details'
+      group: 'details',
     },
     {
       name: 'expertise',
@@ -178,10 +180,10 @@ export default {
       description: 'Fields of expertise or specialization',
       of: [{type: 'string'}],
       options: {
-        layout: 'tags'
+        layout: 'tags',
       },
       fieldset: 'profile',
-      group: 'details'
+      group: 'details',
     },
     {
       name: 'isOrganizer',
@@ -189,44 +191,47 @@ export default {
       type: 'boolean',
       description: 'This person can be assigned as an event organizer',
       initialValue: false,
-      group: 'details'
-    }
+      group: 'details',
+    },
   ],
   preview: {
     select: {
       title: 'name',
       subtitle: 'role',
       org: 'organization',
-      media: 'image'
+      media: 'image',
     },
-    prepare({title, subtitle, org, media}: {
-      title: string;
-      subtitle?: string;
-      org?: string;
-      media?: any;
+    prepare({
+      title,
+      subtitle,
+      org,
+      media,
+    }: {
+      title: string
+      subtitle?: string
+      org?: string
+      media?: Asset
     }) {
       return {
         title: title,
         subtitle: [subtitle, org].filter(Boolean).join(' • '),
-        media: media || UserIcon
+        media: media || UserIcon,
       }
-    }
+    },
   },
   orderings: [
     {
       title: 'Name, A-Z',
       name: 'nameAsc',
-      by: [
-        {field: 'name', direction: 'asc'}
-      ]
+      by: [{field: 'name', direction: 'asc'}],
     },
     {
       title: 'Role',
       name: 'roleDesc',
       by: [
         {field: 'role', direction: 'asc'},
-        {field: 'name', direction: 'asc'}
-      ]
-    }
-  ]
+        {field: 'name', direction: 'asc'},
+      ],
+    },
+  ],
 }

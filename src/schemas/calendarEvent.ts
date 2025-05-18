@@ -1,19 +1,59 @@
-import {Rule} from 'sanity'
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
-  CalendarIcon, 
-  ClockIcon, 
-  ComposeIcon, 
-  EarthGlobeIcon, 
-  UsersIcon, 
-  TagIcon,
+  CalendarIcon,
+  ClockIcon,
+  CogIcon, // Used instead of SettingsIcon
+  ComposeIcon,
+  EarthGlobeIcon,
   ImagesIcon,
   ResetIcon, // Used instead of RepeatIcon
-  CogIcon, // Used instead of SettingsIcon
+  TagIcon,
+  UsersIcon,
 } from '@sanity/icons'
+import {Asset, Rule} from 'sanity'
 
 // Use correct icons as substitutes
 const RepeatIcon = ResetIcon
 const SettingsIcon = CogIcon
+
+type Parent = {
+  locationType?: 'physical' | 'virtual' | 'hybrid' | 'tbd'
+  platform?: string
+  frequency?: string
+  endType?: string
+  isRecurring?: boolean
+}
+type Document = {
+  locationType?: 'physical' | 'virtual' | 'hybrid' | 'tbd'
+  isRecurring?: boolean
+  requiresRegistration?: boolean
+}
+
+// Format status badge
+const getStatusBadge = (statusValue: string) => {
+  switch (statusValue) {
+    case 'cancelled':
+      return ' [CANCELLED]'
+    case 'postponed':
+      return ' [POSTPONED]'
+    case 'rescheduled':
+      return ' [RESCHEDULED]'
+    default:
+      return ''
+  }
+}
+
+// Get description based on status
+const getDescription = (statusValue: string) => {
+  switch (statusValue) {
+    case 'cancelled':
+      return 'This event has been cancelled.'
+    case 'postponed':
+      return 'This event has been postponed.'
+    default:
+      return undefined
+  }
+}
 
 export default {
   name: 'calendarEvent',
@@ -28,7 +68,7 @@ export default {
         collapsible: true,
         collapsed: false,
         icon: ComposeIcon,
-      }
+      },
     },
     {
       name: 'timing',
@@ -37,7 +77,7 @@ export default {
         collapsible: true,
         collapsed: false,
         icon: ClockIcon,
-      }
+      },
     },
     {
       name: 'location',
@@ -46,7 +86,7 @@ export default {
         collapsible: true,
         collapsed: false,
         icon: EarthGlobeIcon,
-      }
+      },
     },
     {
       name: 'categories',
@@ -55,7 +95,7 @@ export default {
         collapsible: true,
         collapsed: true,
         icon: TagIcon,
-      }
+      },
     },
     {
       name: 'media',
@@ -64,7 +104,7 @@ export default {
         collapsible: true,
         collapsed: true,
         icon: ImagesIcon,
-      }
+      },
     },
     {
       name: 'recurrence',
@@ -73,7 +113,7 @@ export default {
         collapsible: true,
         collapsed: true,
         icon: RepeatIcon,
-      }
+      },
     },
     {
       name: 'attendees',
@@ -82,7 +122,7 @@ export default {
         collapsible: true,
         collapsed: true,
         icon: UsersIcon,
-      }
+      },
     },
     {
       name: 'settings',
@@ -91,31 +131,31 @@ export default {
         collapsible: true,
         collapsed: true,
         icon: SettingsIcon,
-      }
-    }
+      },
+    },
   ],
   groups: [
     {
       name: 'details',
       title: 'Event Details',
       icon: ComposeIcon,
-      default: true
+      default: true,
     },
     {
       name: 'scheduling',
       title: 'Scheduling',
-      icon: ClockIcon
+      icon: ClockIcon,
     },
     {
       name: 'organization',
       title: 'Organization',
-      icon: TagIcon
+      icon: TagIcon,
     },
     {
       name: 'advanced',
       title: 'Advanced',
-      icon: SettingsIcon
-    }
+      icon: SettingsIcon,
+    },
   ],
   fields: [
     // ---- Basic Information ----
@@ -124,9 +164,9 @@ export default {
       title: 'Event Title',
       type: 'string',
       description: 'The name of your event',
-      validation: (Rule: Rule) => Rule.required().min(3).max(100),
+      validation: (rule: Rule) => rule.required().min(3).max(100),
       fieldset: 'basicInfo',
-      group: 'details'
+      group: 'details',
     },
     {
       name: 'slug',
@@ -135,11 +175,11 @@ export default {
       description: 'The URL-friendly identifier for this event',
       options: {
         source: 'title',
-        maxLength: 96
+        maxLength: 96,
       },
       fieldset: 'basicInfo',
       group: 'details',
-      validation: (Rule: Rule) => Rule.required()
+      validation: (rule: Rule) => rule.required(),
     },
     {
       name: 'description',
@@ -148,7 +188,7 @@ export default {
       description: 'A detailed description of the event',
       rows: 5,
       fieldset: 'basicInfo',
-      group: 'details'
+      group: 'details',
     },
     {
       name: 'organizers',
@@ -157,9 +197,9 @@ export default {
       description: 'Who is organizing this event?',
       of: [{type: 'reference', to: {type: 'person'}}],
       fieldset: 'basicInfo',
-      group: 'organization'
+      group: 'organization',
     },
-    
+
     // ---- Timing Information ----
     {
       name: 'startDateTime',
@@ -170,11 +210,11 @@ export default {
         dateFormat: 'MMMM DD, YYYY',
         timeFormat: 'h:mm A',
         timeStep: 15,
-        calendarTodayLabel: 'Today'
+        calendarTodayLabel: 'Today',
       },
-      validation: (Rule: Rule) => Rule.required(),
+      validation: (rule: Rule) => rule.required(),
       fieldset: 'timing',
-      group: 'scheduling'
+      group: 'scheduling',
     },
     {
       name: 'endDateTime',
@@ -185,11 +225,12 @@ export default {
         dateFormat: 'MMMM DD, YYYY',
         timeFormat: 'h:mm A',
         timeStep: 15,
-        calendarTodayLabel: 'Today'
+        calendarTodayLabel: 'Today',
       },
-      validation: (Rule: Rule) => Rule.min(Rule.valueOfField('startDateTime')).warning('End time should be after start time'),
+      validation: (rule: Rule) =>
+        rule.min(rule.valueOfField('startDateTime')).warning('End time should be after start time'),
       fieldset: 'timing',
-      group: 'scheduling'
+      group: 'scheduling',
     },
     {
       name: 'allDay',
@@ -198,7 +239,7 @@ export default {
       description: 'Is this an all-day event?',
       initialValue: false,
       fieldset: 'timing',
-      group: 'scheduling'
+      group: 'scheduling',
     },
     {
       name: 'status',
@@ -210,15 +251,15 @@ export default {
           {title: 'Scheduled', value: 'scheduled'},
           {title: 'Cancelled', value: 'cancelled'},
           {title: 'Postponed', value: 'postponed'},
-          {title: 'Rescheduled', value: 'rescheduled'}
+          {title: 'Rescheduled', value: 'rescheduled'},
         ],
-        layout: 'radio'
+        layout: 'radio',
       },
       initialValue: 'scheduled',
       fieldset: 'timing',
-      group: 'scheduling'
+      group: 'scheduling',
     },
-    
+
     // ---- Location Information ----
     {
       name: 'locationType',
@@ -228,30 +269,30 @@ export default {
       options: {
         list: [
           {
-            title: 'Physical Location', 
-            value: 'physical'
+            title: 'Physical Location',
+            value: 'physical',
           },
           {
-            title: 'Virtual Event', 
-            value: 'virtual'
+            title: 'Virtual Event',
+            value: 'virtual',
           },
           {
-            title: 'Hybrid Event', 
-            value: 'hybrid'
+            title: 'Hybrid Event',
+            value: 'hybrid',
           },
           {
-            title: 'TBD', 
-            value: 'tbd'
-          }
+            title: 'TBD',
+            value: 'tbd',
+          },
         ],
         layout: 'dropdown',
-        direction: 'vertical'
+        direction: 'vertical',
       },
       fieldset: 'location',
       group: 'details',
-      validation: (Rule: Rule) => Rule.required().error('Please select a location type')
+      validation: (rule: Rule) => rule.required().error('Please select a location type'),
     },
-    
+
     // Location type description field - using description instead of custom component
     {
       name: 'locationTypeDescription',
@@ -262,9 +303,9 @@ export default {
       description: 'Select a location type from the dropdown above to see additional options.',
       fieldset: 'location',
       group: 'details',
-      hidden: ({parent}: {parent: Record<string, any>}) => !parent?.locationType
+      hidden: ({parent}: {parent: Parent}) => !parent?.locationType,
     },
-    
+
     // Physical Location fields
     {
       name: 'location',
@@ -276,73 +317,73 @@ export default {
           title: 'Address Details',
           options: {
             collapsible: true,
-            collapsed: false
-          }
-        }
+            collapsed: false,
+          },
+        },
       ],
       fields: [
         {
-          name: 'name', 
-          type: 'string', 
+          name: 'name',
+          type: 'string',
           title: 'Venue Name',
-          description: 'Name of the venue or building'
+          description: 'Name of the venue or building',
         },
         {
-          name: 'address', 
-          type: 'text', 
+          name: 'address',
+          type: 'text',
           title: 'Street Address',
           description: 'Full address of the venue',
-          fieldset: 'address'
+          fieldset: 'address',
         },
         {
-          name: 'city', 
-          type: 'string', 
+          name: 'city',
+          type: 'string',
           title: 'City',
-          fieldset: 'address'
+          fieldset: 'address',
         },
         {
-          name: 'state', 
-          type: 'string', 
+          name: 'state',
+          type: 'string',
           title: 'State/Province',
-          fieldset: 'address'
+          fieldset: 'address',
         },
         {
-          name: 'zipCode', 
-          type: 'string', 
+          name: 'zipCode',
+          type: 'string',
           title: 'ZIP/Postal Code',
-          fieldset: 'address'
+          fieldset: 'address',
         },
         {
-          name: 'country', 
-          type: 'string', 
+          name: 'country',
+          type: 'string',
           title: 'Country',
-          fieldset: 'address'
+          fieldset: 'address',
         },
         {
-          name: 'coordinates', 
-          type: 'geopoint', 
+          name: 'coordinates',
+          type: 'geopoint',
           title: 'Map Coordinates',
-          description: 'Add a map marker for the location'
+          description: 'Add a map marker for the location',
         },
         {
-          name: 'accessibilityInfo', 
-          type: 'text', 
+          name: 'accessibilityInfo',
+          type: 'text',
           title: 'Accessibility Information',
-          description: 'Details about venue accessibility'
+          description: 'Details about venue accessibility',
         },
         {
-          name: 'parkingInfo', 
-          type: 'text', 
+          name: 'parkingInfo',
+          type: 'text',
           title: 'Parking Information',
-          description: 'Details about parking options'
-        }
+          description: 'Details about parking options',
+        },
       ],
       fieldset: 'location',
       group: 'details',
-      hidden: ({parent}: {parent: Record<string, any>}) => 
-        !parent?.locationType || !['physical', 'hybrid'].includes(parent.locationType)
+      hidden: ({parent}: {parent: Parent}) =>
+        !parent?.locationType || !['physical', 'hybrid'].includes(parent.locationType),
     },
-    
+
     // Virtual Event fields
     {
       name: 'virtualEvent',
@@ -350,8 +391,8 @@ export default {
       type: 'object',
       fields: [
         {
-          name: 'platform', 
-          type: 'string', 
+          name: 'platform',
+          type: 'string',
           title: 'Platform',
           description: 'Select the platform hosting this virtual event',
           options: {
@@ -363,67 +404,67 @@ export default {
               {title: 'GoToMeeting', value: 'gotomeeting'},
               {title: 'YouTube Live', value: 'youtube'},
               {title: 'Vimeo', value: 'vimeo'},
-              {title: 'Other', value: 'other'}
+              {title: 'Other', value: 'other'},
             ],
-            layout: 'dropdown'
+            layout: 'dropdown',
           },
-          validation: (Rule: Rule) => 
-            Rule.custom((value, context) => {
+          validation: (rule: Rule) =>
+            rule.custom((value, context) => {
               // Only required if virtual event and parent locationType is virtual or hybrid
-              const doc = context.document as Record<string, any>;
-              if (['virtual', 'hybrid'].includes(doc.locationType) && !value) {
-                return 'Platform is required for virtual events';
+              const doc = context.document as Document
+              if (doc.locationType && ['virtual', 'hybrid'].includes(doc.locationType) && !value) {
+                return 'Platform is required for virtual events'
               }
-              return true;
-            })
+              return true
+            }),
         },
         {
-          name: 'platformOther', 
-          type: 'string', 
+          name: 'platformOther',
+          type: 'string',
           title: 'Other Platform',
           description: 'Specify the platform if not listed above',
-          hidden: ({parent}: {parent: Record<string, any>}) => parent?.platform !== 'other'
+          hidden: ({parent}: {parent: Parent}) => parent?.platform !== 'other',
         },
         {
-          name: 'url', 
-          type: 'url', 
+          name: 'url',
+          type: 'url',
           title: 'Event URL',
           description: 'Link to join the virtual event',
-          validation: (Rule: Rule) => Rule.uri({scheme: ['http', 'https']})
+          validation: (rule: Rule) => rule.uri({scheme: ['http', 'https']}),
         },
         {
-          name: 'meetingId', 
-          type: 'string', 
+          name: 'meetingId',
+          type: 'string',
           title: 'Meeting ID',
-          description: 'Optional meeting ID'
+          description: 'Optional meeting ID',
         },
         {
-          name: 'password', 
-          type: 'string', 
+          name: 'password',
+          type: 'string',
           title: 'Password',
-          description: 'Optional password to access the event'
+          description: 'Optional password to access the event',
         },
         {
-          name: 'joinInstructions', 
-          type: 'text', 
+          name: 'joinInstructions',
+          type: 'text',
           title: 'Join Instructions',
           description: 'Step-by-step instructions for joining the event',
-          rows: 3
+          rows: 3,
         },
         {
-          name: 'additionalInfo', 
-          type: 'text', 
+          name: 'additionalInfo',
+          type: 'text',
           title: 'Additional Information',
           description: 'Any other details needed to join',
-          rows: 2
-        }
+          rows: 2,
+        },
       ],
       fieldset: 'location',
       group: 'details',
-      hidden: ({parent}: {parent: Record<string, any>}) => 
-        !parent?.locationType || !['virtual', 'hybrid'].includes(parent.locationType)
+      hidden: ({parent}: {parent: Parent}) =>
+        !parent?.locationType || !['virtual', 'hybrid'].includes(parent.locationType),
     },
-    
+
     // ---- Categories & Tags ----
     {
       name: 'categories',
@@ -432,7 +473,7 @@ export default {
       description: 'Assign this event to categories',
       of: [{type: 'reference', to: {type: 'eventCategory'}}],
       fieldset: 'categories',
-      group: 'organization'
+      group: 'organization',
     },
     {
       name: 'tags',
@@ -441,12 +482,12 @@ export default {
       description: 'Add relevant tags for this event',
       of: [{type: 'string'}],
       options: {
-        layout: 'tags'
+        layout: 'tags',
       },
       fieldset: 'categories',
-      group: 'organization'
+      group: 'organization',
     },
-    
+
     // ---- Media & Content ----
     {
       name: 'image',
@@ -454,7 +495,7 @@ export default {
       type: 'image',
       description: 'The main image for this event',
       options: {
-        hotspot: true
+        hotspot: true,
       },
       fields: [
         {
@@ -463,20 +504,20 @@ export default {
           type: 'string',
           description: 'Important for accessibility and SEO',
           options: {
-            isHighlighted: true
-          }
+            isHighlighted: true,
+          },
         },
         {
           name: 'caption',
           title: 'Caption',
           type: 'string',
           options: {
-            isHighlighted: true
-          }
-        }
+            isHighlighted: true,
+          },
+        },
       ],
       fieldset: 'media',
-      group: 'details'
+      group: 'details',
     },
     {
       name: 'gallery',
@@ -487,7 +528,7 @@ export default {
         {
           type: 'image',
           options: {
-            hotspot: true
+            hotspot: true,
           },
           fields: [
             {
@@ -495,24 +536,24 @@ export default {
               title: 'Alt Text',
               type: 'string',
               options: {
-                isHighlighted: true
-              }
+                isHighlighted: true,
+              },
             },
             {
               name: 'caption',
               title: 'Caption',
               type: 'string',
               options: {
-                isHighlighted: true
-              }
-            }
-          ]
-        }
+                isHighlighted: true,
+              },
+            },
+          ],
+        },
       ],
       fieldset: 'media',
-      group: 'details'
+      group: 'details',
     },
-    
+
     // ---- Recurrence Settings ----
     {
       name: 'isRecurring',
@@ -521,20 +562,21 @@ export default {
       description: 'Does this event repeat on a schedule?',
       initialValue: false,
       fieldset: 'recurrence',
-      group: 'scheduling'
+      group: 'scheduling',
     },
-    
+
     // Only show recurrence explanation if recurrence is enabled - using description instead
     {
       name: 'recurrenceDescription',
       title: ' ',
-      type: 'string', 
-      description: 'Set up a recurring pattern for this event. You can specify how often it repeats and when the recurrence ends.',
+      type: 'string',
+      description:
+        'Set up a recurring pattern for this event. You can specify how often it repeats and when the recurrence ends.',
       fieldset: 'recurrence',
       group: 'scheduling',
-      hidden: ({parent}: {parent: Record<string, any>}) => !parent?.isRecurring
+      hidden: ({parent}: {parent: Parent}) => !parent?.isRecurring,
     },
-    
+
     {
       name: 'recurrenceSettings',
       title: 'Recurrence Pattern',
@@ -546,17 +588,17 @@ export default {
           title: 'Frequency Settings',
           options: {
             collapsible: true,
-            collapsed: false
-          }
+            collapsed: false,
+          },
         },
         {
           name: 'endSettings',
           title: 'End Settings',
           options: {
             collapsible: true,
-            collapsed: false
-          }
-        }
+            collapsed: false,
+          },
+        },
       ],
       fields: [
         {
@@ -567,29 +609,29 @@ export default {
           options: {
             list: [
               {
-                title: 'Daily', 
-                value: 'daily'
+                title: 'Daily',
+                value: 'daily',
               },
               {
-                title: 'Weekly', 
-                value: 'weekly'
+                title: 'Weekly',
+                value: 'weekly',
               },
               {
-                title: 'Monthly', 
-                value: 'monthly'
+                title: 'Monthly',
+                value: 'monthly',
               },
               {
-                title: 'Yearly', 
-                value: 'yearly'
-              }
+                title: 'Yearly',
+                value: 'yearly',
+              },
             ],
             layout: 'dropdown',
-            direction: 'vertical'
+            direction: 'vertical',
           },
-          validation: (Rule: Rule) => Rule.required().error('Please select a frequency'),
-          fieldset: 'frequencySettings'
+          validation: (rule: Rule) => rule.required().error('Please select a frequency'),
+          fieldset: 'frequencySettings',
         },
-        
+
         // Dynamic frequency description based on selection
         {
           name: 'frequencyDescription',
@@ -597,19 +639,19 @@ export default {
           type: 'string',
           description: 'Select a frequency from the dropdown above.',
           fieldset: 'frequencySettings',
-          hidden: ({parent}: {parent: Record<string, any>}) => !parent?.frequency
+          hidden: ({parent}: {parent: Parent}) => !parent?.frequency,
         },
-        
+
         {
           name: 'interval',
           title: 'Interval',
           type: 'number',
           description: 'Repeat every X days/weeks/months/years',
           initialValue: 1,
-          validation: (Rule: Rule) => Rule.min(1).integer().required(),
-          fieldset: 'frequencySettings'
+          validation: (rule: Rule) => rule.min(1).integer().required(),
+          fieldset: 'frequencySettings',
         },
-        
+
         {
           name: 'daysOfWeek',
           title: 'Days of Week',
@@ -624,21 +666,22 @@ export default {
               {title: 'Thursday', value: 'thursday'},
               {title: 'Friday', value: 'friday'},
               {title: 'Saturday', value: 'saturday'},
-              {title: 'Sunday', value: 'sunday'}
+              {title: 'Sunday', value: 'sunday'},
             ],
-            layout: 'grid'
+            layout: 'grid',
           },
-          validation: (Rule: Rule) => Rule.custom((value: string[] | undefined, context) => {
-            const parent = context.parent as Record<string, any>;
-            if (parent?.frequency === 'weekly' && (!value || value.length === 0)) {
-              return 'Please select at least one day of the week';
-            }
-            return true;
-          }),
+          validation: (rule: Rule) =>
+            rule.custom((value: string[] | undefined, context) => {
+              const parent = context.parent as Parent
+              if (parent?.frequency === 'weekly' && (!value || value.length === 0)) {
+                return 'Please select at least one day of the week'
+              }
+              return true
+            }),
           fieldset: 'frequencySettings',
-          hidden: ({parent}: {parent: Record<string, any>}) => parent?.frequency !== 'weekly'
+          hidden: ({parent}: {parent: Parent}) => parent?.frequency !== 'weekly',
         },
-        
+
         {
           name: 'endType',
           title: 'Ends',
@@ -648,42 +691,43 @@ export default {
             list: [
               {title: 'Never', value: 'never'},
               {title: 'On Date', value: 'onDate'},
-              {title: 'After Occurrences', value: 'afterOccurrences'}
+              {title: 'After Occurrences', value: 'afterOccurrences'},
             ],
-            layout: 'radio'
+            layout: 'radio',
           },
           initialValue: 'never',
-          fieldset: 'endSettings'
+          fieldset: 'endSettings',
         },
-        
+
         {
           name: 'endDate',
           title: 'End Date',
           type: 'date',
           description: 'Last date this event will occur',
           options: {
-            dateFormat: 'MMMM DD, YYYY'
+            dateFormat: 'MMMM DD, YYYY',
           },
-          validation: (Rule: Rule) => Rule.required().error('End date is required'),
+          validation: (rule: Rule) => rule.required().error('End date is required'),
           fieldset: 'endSettings',
-          hidden: ({parent}: {parent: Record<string, any>}) => parent?.endType !== 'onDate'
+          hidden: ({parent}: {parent: Parent}) => parent?.endType !== 'onDate',
         },
-        
+
         {
           name: 'occurrences',
           title: 'Number of Occurrences',
           type: 'number',
           description: 'How many times will this event occur?',
-          validation: (Rule: Rule) => Rule.required().min(1).integer().error('Please enter a valid number of occurrences'),
+          validation: (rule: Rule) =>
+            rule.required().min(1).integer().error('Please enter a valid number of occurrences'),
           fieldset: 'endSettings',
-          hidden: ({parent}: {parent: Record<string, any>}) => parent?.endType !== 'afterOccurrences'
-        }
+          hidden: ({parent}: {parent: Parent}) => parent?.endType !== 'afterOccurrences',
+        },
       ],
-      hidden: ({document}: {document: Record<string, any>}) => !document?.isRecurring,
+      hidden: ({document}: {document: Document}) => !document?.isRecurring,
       fieldset: 'recurrence',
-      group: 'scheduling'
+      group: 'scheduling',
     },
-    
+
     // ---- Attendees & Registration ----
     {
       name: 'requiresRegistration',
@@ -692,7 +736,7 @@ export default {
       description: 'Do attendees need to register for this event?',
       initialValue: false,
       fieldset: 'attendees',
-      group: 'advanced'
+      group: 'advanced',
     },
     {
       name: 'attendeeSettings',
@@ -705,13 +749,13 @@ export default {
           title: 'Maximum Attendees',
           type: 'number',
           description: 'Maximum number of attendees (leave empty for unlimited)',
-          validation: (Rule: Rule) => Rule.positive().integer()
+          validation: (rule: Rule) => rule.positive().integer(),
         },
         {
           name: 'registrationUrl',
           title: 'Registration URL',
           type: 'url',
-          description: 'Link to the registration form or page'
+          description: 'Link to the registration form or page',
         },
         {
           name: 'registrationDeadline',
@@ -720,21 +764,21 @@ export default {
           description: 'Last date and time to register',
           options: {
             dateFormat: 'MMMM DD, YYYY',
-            timeFormat: 'h:mm A'
-          }
+            timeFormat: 'h:mm A',
+          },
         },
         {
           name: 'registrationNotes',
           title: 'Registration Notes',
           type: 'text',
-          description: 'Additional information about registration'
-        }
+          description: 'Additional information about registration',
+        },
       ],
-      hidden: ({document}: {document: Record<string, any>}) => !document?.requiresRegistration,
+      hidden: ({document}: {document: Document}) => !document?.requiresRegistration,
       fieldset: 'attendees',
-      group: 'advanced'
+      group: 'advanced',
     },
-    
+
     // ---- Event Settings ----
     {
       name: 'visibility',
@@ -745,13 +789,13 @@ export default {
         list: [
           {title: 'Public', value: 'public'},
           {title: 'Private', value: 'private'},
-          {title: 'Draft', value: 'draft'}
+          {title: 'Draft', value: 'draft'},
         ],
-        layout: 'radio'
+        layout: 'radio',
       },
       initialValue: 'public',
       fieldset: 'settings',
-      group: 'advanced'
+      group: 'advanced',
     },
     {
       name: 'featured',
@@ -760,8 +804,8 @@ export default {
       description: 'Mark this as a featured event',
       initialValue: false,
       fieldset: 'settings',
-      group: 'advanced'
-    }
+      group: 'advanced',
+    },
   ],
   preview: {
     select: {
@@ -778,95 +822,88 @@ export default {
       virtualPlatformOther: 'virtualEvent.platformOther',
       // Featured flag and image
       featured: 'featured',
-      media: 'image'
+      media: 'image',
     },
     prepare({
-      title, 
-      startDate, 
-      status, 
-      locationType, 
-      venueName, 
-      venueCity, 
-      venueState, 
-      virtualPlatform, 
+      title,
+      startDate,
+      status,
+      locationType,
+      venueName,
+      venueCity,
+      venueState,
+      virtualPlatform,
       virtualPlatformOther,
       featured,
-      media
+      media,
     }: {
-      title: string;
-      startDate: string;
-      status?: string;
-      locationType?: string;
-      venueName?: string;
-      venueCity?: string;
-      venueState?: string;
-      virtualPlatform?: string;
-      virtualPlatformOther?: string;
-      featured?: boolean;
-      media: any;
+      title: string
+      startDate: string
+      status: string
+      locationType: string
+      venueName: string
+      venueCity: string
+      venueState: string
+      virtualPlatform: string
+      virtualPlatformOther: string
+      featured: boolean
+      media: Asset
     }) {
       // Format date nicely
-      const date = startDate ? new Date(startDate).toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      }) : 'No date set';
-      
+      const date = startDate
+        ? new Date(startDate).toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : 'No date set'
+
       // Format location based on type and available data
-      let locationText = '';
+      let locationText = ''
       if (locationType === 'physical') {
-        const venue = [venueName, venueCity, venueState].filter(Boolean).join(', ');
-        locationText = venue ? ` @ ${venue}` : '';
+        const venue = [venueName, venueCity, venueState].filter(Boolean).join(', ')
+        locationText = venue ? ` @ ${venue}` : ''
       } else if (locationType === 'virtual') {
-        const platform = virtualPlatform === 'other' ? virtualPlatformOther : virtualPlatform;
-        locationText = platform ? ` [${platform}]` : ' [Virtual]';
+        const platform = virtualPlatform === 'other' ? virtualPlatformOther : virtualPlatform
+        locationText = platform ? ` [${platform}]` : ' [Virtual]'
       } else if (locationType === 'hybrid') {
-        const venue = venueName || '';
-        locationText = venue ? ` [Hybrid @ ${venue}]` : ' [Hybrid]';
+        const venue = venueName || ''
+        locationText = venue ? ` [Hybrid @ ${venue}]` : ' [Hybrid]'
       } else if (locationType === 'tbd') {
-        locationText = ' [Location TBD]';
+        locationText = ' [Location TBD]'
       }
-      
-      // Format status badge
-      const statusBadge = status === 'cancelled' ? ' [CANCELLED]' : 
-                          status === 'postponed' ? ' [POSTPONED]' : 
-                          status === 'rescheduled' ? ' [RESCHEDULED]' : '';
-      
+
+      const statusBadge = getStatusBadge(status)
+      const description = getDescription(status)
+
       // Combine date, location, and status for subtitle
-      const subtitle = `${date}${locationText}${statusBadge}`;
-      
+      const subtitle = `${date}${locationText}${statusBadge}`
+
       // Return formatted preview
       return {
         title: featured ? `★ ${title}` : title,
         subtitle: subtitle,
         media: media || CalendarIcon,
-        description: status === 'cancelled' ? 'This event has been cancelled.' : 
-                    status === 'postponed' ? 'This event has been postponed.' : undefined
-      };
-    }
+        description: description,
+      }
+    },
   },
   orderings: [
     {
       title: 'Start Date, New to Old',
       name: 'startDateDesc',
-      by: [
-        {field: 'startDateTime', direction: 'desc'}
-      ]
+      by: [{field: 'startDateTime', direction: 'desc'}],
     },
     {
       title: 'Start Date, Old to New',
       name: 'startDateAsc',
-      by: [
-        {field: 'startDateTime', direction: 'asc'}
-      ]
+      by: [{field: 'startDateTime', direction: 'asc'}],
     },
     {
       title: 'Title, A-Z',
       name: 'titleAsc',
-      by: [
-        {field: 'title', direction: 'asc'}
-      ]
-    }
-  ]
+      by: [{field: 'title', direction: 'asc'}],
+    },
+  ],
 }

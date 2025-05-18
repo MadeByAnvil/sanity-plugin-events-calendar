@@ -1,6 +1,7 @@
+import {blue} from '@sanity/color'
 import styled from 'styled-components'
-import { blue } from '@sanity/color'
-import { theme, interactiveStateStyles } from '../styles/theme'
+
+import {theme} from '../styles/theme'
 
 export const Container = styled.div`
   padding: ${theme.space.lg};
@@ -38,7 +39,7 @@ export const InfoButton = styled.button`
   align-items: center;
   color: #666;
   transition: color ${theme.transitions.fast};
-  
+
   &:hover {
     color: ${theme.colors.button.primary.bg};
   }
@@ -60,34 +61,37 @@ export const LegendItem = styled.div`
   gap: 6px;
 `
 
-export const LegendColor = styled.div<{ variant?: 'default' | 'featured' | 'postponed' | 'cancelled' }>`
+export const LegendColor = styled.div<{
+  variant?: 'default' | 'featured' | 'postponed' | 'cancelled'
+}>`
   width: 12px;
   height: 12px;
   border-radius: ${theme.radii.sm};
-  background-color: ${props => {
-    switch(props.variant) {
+  background-color: ${(props) => {
+    switch (props.variant) {
       case 'featured':
-        return theme.colors.event.featured.bg;
+        return theme.colors.event.featured.bg
       case 'postponed':
-        return theme.colors.event.postponed.bg;
+        return theme.colors.event.postponed.bg
       case 'cancelled':
-        return theme.colors.event.cancelled.bg;
+        return theme.colors.event.cancelled.bg
       default:
-        return theme.colors.event.default.bg;
+        return theme.colors.event.default.bg
     }
   }};
-  border: 1px solid ${props => {
-    switch(props.variant) {
-      case 'featured':
-        return theme.colors.event.featured.border;
-      case 'postponed':
-        return theme.colors.event.postponed.border;
-      case 'cancelled':
-        return theme.colors.event.cancelled.border;
-      default:
-        return theme.colors.event.default.border;
-    }
-  }};
+  border: 1px solid
+    ${(props) => {
+      switch (props.variant) {
+        case 'featured':
+          return theme.colors.event.featured.border
+        case 'postponed':
+          return theme.colors.event.postponed.border
+        case 'cancelled':
+          return theme.colors.event.cancelled.border
+        default:
+          return theme.colors.event.default.border
+      }
+    }};
 `
 
 export const HelpTips = styled.div`
@@ -97,12 +101,12 @@ export const HelpTips = styled.div`
   border-radius: ${theme.radii.md};
   font-size: ${theme.fontSizes.base};
   border: 1px solid ${theme.colors.info.border};
-  
+
   h3 {
     font-size: ${theme.fontSizes.md};
     margin: 0 0 ${theme.space.sm} 0;
   }
-  
+
   ul {
     margin: 0;
     padding-left: 20px;
@@ -136,7 +140,7 @@ export const PrimaryButton = styled.button`
   align-items: center;
   gap: 6px;
   transition: background-color ${theme.transitions.fast};
-  
+
   &:hover {
     background-color: ${blue[600].hex};
   }
@@ -151,7 +155,7 @@ export const SecondaryButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: background-color ${theme.transitions.fast};
-  
+
   &:hover {
     background-color: #f5f5f5;
   }
