@@ -1,5 +1,10 @@
 # sanity-plugin-events-calendar
 
+[![CI & Release](https://github.com/madebyanvil/sanity-plugin-events-calendar/actions/workflows/main.yml/badge.svg)](https://github.com/madebyanvil/sanity-plugin-events-calendar/actions/workflows/main.yml)
+[![npm version](https://img.shields.io/npm/v/sanity-plugin-events-calendar.svg?style=flat)](https://www.npmjs.com/package/sanity-plugin-events-calendar)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/sanity-plugin-events-calendar?label=gzip%20size)](https://bundlephobia.com/package/sanity-plugin-events-calendar)
+[![GitHub license](https://img.shields.io/github/license/madebyanvil/sanity-plugin-events-calendar)](https://github.com/madebyanvil/sanity-plugin-events-calendar/blob/main/LICENSE)
+
 > This is a **Sanity Studio v3** plugin for creating and managing calendar events.
 
 ## Installation

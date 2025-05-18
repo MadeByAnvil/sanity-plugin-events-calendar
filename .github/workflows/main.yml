@@ -1,0 +1,81 @@
+name: CI & Release
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Run tests'
+        required: false
+        default: true
+        type: boolean
+      release:
+        description: 'Release new version'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: 18
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  test:
+    needs: build
+    runs-on: ${{ matrix.os }}
+    if: inputs.test != false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - if: matrix.os == 'windows-latest'
+        run: git config --global core.autocrlf false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+
+  release:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      (github.event_name == 'workflow_dispatch' && inputs.release == true || github.event_name != 'workflow_dispatch')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - name: Run audit and fix
+        run: npm audit --audit-level=moderate
+      - name: Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
