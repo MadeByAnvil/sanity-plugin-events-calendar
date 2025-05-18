@@ -52,7 +52,8 @@
     "lint": "eslint .",
     "prepublishOnly": "npm run build",
     "watch": "pkg-utils watch --strict",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "echo 'No tests yet. All good!'"
   },
   "dependencies": {
     "@sanity/color": "^3.0.6",

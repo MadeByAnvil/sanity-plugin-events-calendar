@@ -30,9 +30,16 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+      - name: Clean install cache
+        run: rm -rf node_modules package-lock.json
+      - name: Update npm
+        run: npm install -g npm@latest
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
 
   test:
     needs: build
@@ -51,9 +58,16 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-      - run: npm ci
-      - run: npm test
-      - run: npm run lint
+      - name: Clean install cache
+        run: rm -rf node_modules package-lock.json
+      - name: Update npm
+        run: npm install -g npm@latest
+      - name: Install dependencies
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Lint
+        run: npm run lint
 
   release:
     needs: [build, test]
@@ -70,8 +84,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: npm ci
-      - run: npm run build
+      - name: Clean install cache
+        run: rm -rf node_modules package-lock.json
+      - name: Update npm
+        run: npm install -g npm@latest
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
       - name: Run audit and fix
         run: npm audit --audit-level=moderate
       - name: Semantic Release
