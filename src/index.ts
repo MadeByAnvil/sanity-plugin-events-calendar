@@ -1,7 +1,10 @@
 import {definePlugin} from 'sanity'
+import {CalendarIcon} from '@sanity/icons'
+import {schemaTypes} from './schemas'
+import CalendarTool from './tools/CalendarTool'
 
-interface MyPluginConfig {
-  /* nothing here yet */
+interface CalendarPluginConfig {
+  /* Configuration options can be added here */
 }
 
 /**
@@ -9,18 +12,28 @@ interface MyPluginConfig {
  *
  * ```ts
  * import {defineConfig} from 'sanity'
- * import {myPlugin} from 'sanity-plugin-events-calendar'
+ * import {calendarPlugin} from 'sanity-plugin-events-calendar'
  *
  * export default defineConfig({
  *   // ...
- *   plugins: [myPlugin()],
+ *   plugins: [calendarPlugin()],
  * })
  * ```
  */
-export const myPlugin = definePlugin<MyPluginConfig | void>((config = {}) => {
-  // eslint-disable-next-line no-console
-  console.log('hello from sanity-plugin-events-calendar')
+export const calendarPlugin = definePlugin<CalendarPluginConfig | void>((config = {}) => {
   return {
     name: 'sanity-plugin-events-calendar',
+    schema: {
+      types: schemaTypes,
+    },
+    tools: [{
+      name: 'calendar',
+      title: 'Calendar',
+      icon: CalendarIcon,
+      component: CalendarTool,
+    }],
   }
 })
+
+// Export schema types for direct usage
+export {schemaTypes}

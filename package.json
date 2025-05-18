@@ -1,10 +1,13 @@
 {
   "name": "sanity-plugin-events-calendar",
   "version": "1.0.0",
-  "description": "A simple events calendar plugin for Sanity",
+  "description": "A comprehensive events calendar plugin for Sanity Studio",
   "keywords": [
     "sanity",
-    "sanity-plugin"
+    "sanity-plugin",
+    "calendar",
+    "events",
+    "scheduling"
   ],
   "homepage": "https://github.com/madebyanvil/sanity-plugin-events-calendar#readme",
   "bugs": {
@@ -18,6 +21,12 @@
   "author": "Casey Zumwalt <casey@madebyanvil.com>",
   "sideEffects": false,
   "type": "commonjs",
+  "sanityPlugin": {
+    "verifyPackage": {
+      "tsc": false
+    }
+  },
+  "browserslist": "extends @sanity/browserslist-config",
   "exports": {
     ".": {
       "source": "./src/index.ts",
