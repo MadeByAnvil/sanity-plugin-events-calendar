@@ -4,9 +4,8 @@ import {definePlugin} from 'sanity'
 import {schemaTypes} from './schemas'
 import CalendarTool from './tools/CalendarTool'
 
-// Note: CSS is extracted to a separate file
-// that can be imported by the user when using this plugin:
-// import 'sanity-plugin-events-calendar/styles.css'
+// Note: Styling is handled through styled-components
+// No separate CSS import is needed
 
 /**
  * Calendar plugin for Sanity Studio
