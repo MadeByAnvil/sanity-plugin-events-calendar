@@ -31,11 +31,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - name: Clean install cache
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
       - name: Use compatible npm for Node 18
         run: npm install -g npm@9.9.2
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Lint
         run: npm run lint
       - name: Build
@@ -59,7 +59,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - name: Clean install cache
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
       - name: Update npm for Node 20+
         if: matrix.node >= 20
         run: npm install -g npm@latest
@@ -67,7 +67,7 @@ jobs:
         if: matrix.node < 20
         run: npm install -g npm@9.9.2
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Test
         run: npm test
       - name: Lint
@@ -89,11 +89,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - name: Clean install cache
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
       - name: Use compatible npm for Node 18
         run: npm install -g npm@9.9.2
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Build
         run: npm run build
       - name: Run audit and fix
