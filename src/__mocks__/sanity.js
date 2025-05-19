@@ -1,0 +1,1 @@
+exports.definePlugin = (callback) => callback()
