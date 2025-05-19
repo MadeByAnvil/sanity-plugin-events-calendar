@@ -12,22 +12,11 @@ import {
 } from '@sanity/icons'
 import {Asset, Rule} from 'sanity'
 
+import {Document, Parent} from '../types/calendar'
+
 // Use correct icons as substitutes
 const RepeatIcon = ResetIcon
 const SettingsIcon = CogIcon
-
-type Parent = {
-  locationType?: 'physical' | 'virtual' | 'hybrid' | 'tbd'
-  platform?: string
-  frequency?: string
-  endType?: string
-  isRecurring?: boolean
-}
-type Document = {
-  locationType?: 'physical' | 'virtual' | 'hybrid' | 'tbd'
-  isRecurring?: boolean
-  requiresRegistration?: boolean
-}
 
 // Format status badge
 const getStatusBadge = (statusValue: string) => {
