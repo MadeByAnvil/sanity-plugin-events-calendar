@@ -94,7 +94,7 @@
     "sanity": "^3"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
